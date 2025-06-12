@@ -8,7 +8,7 @@
 
 To run tests, just run:
 
-    uv run pytest
+    pytest
 
 ## Test reports
 
