@@ -1,6 +1,7 @@
 .root
 migrations
 .gradio/
+emails
 *.db
 *.bak
 *.xls*
