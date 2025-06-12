@@ -8,10 +8,12 @@ class Config(BaseSettings):
         case_sensitive=True, env_file=".env", env_file_encoding="utf-8", extra="allow"
     )
 
+    LOGLEVEL: str
     IMAP_SERVER: str
     IMAP_PORT: int
     USERNAME: str
     PASSWORD: str
+    MAILBOX: str
     SAVE_DIR: Path
 
 
