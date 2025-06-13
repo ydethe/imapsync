@@ -19,6 +19,14 @@ class Email:
         ret.__eml_to_markdown(raw_msg)
         return ret
 
+    @classmethod
+    def from_bin_file(cls, pth: Path) -> "Email":
+        ret = cls()
+        with open(pth, "rb") as f:
+            raw_msg = f.read()
+        ret.__eml_to_markdown(raw_msg)
+        return ret
+
     def __init__(self, md_content: str = None, dt: datetime = None, parsing_status: bool = None):
         self.markdown = md_content
         self.dt = dt
