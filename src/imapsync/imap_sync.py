@@ -1,4 +1,3 @@
-from datetime import datetime
 import imaplib
 from pathlib import Path
 from typing import List
@@ -7,7 +6,7 @@ from tqdm import tqdm
 
 from .config import config, ImapConfiguration
 from . import logger
-from .Email import eml_to_markdown
+from .Email import Email
 
 
 def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
@@ -25,7 +24,7 @@ def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
     return mail
 
 
-def save_eml(uid: str, raw_msg: bytes, folder: Path) -> datetime:
+def save_eml(uid: str, raw_msg: bytes, folder: Path) -> Email:
     """Save an email as markdown file locally
 
     Args:
@@ -37,15 +36,23 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path) -> datetime:
         Date of the email
 
     """
-    message, dt, status = eml_to_markdown(raw_msg)
-    if not status:
-        logger.error(f"Conversion error for {uid}")
+    try:
+        mail = Email.from_bytes(raw_msg)
+        parsing_status = mail.parsing_status
+    except Exception:
+        mail = None
+        parsing_status = False
 
-    eml_path = folder / f"{uid}.md"
-    with open(eml_path, "w") as f:
-        f.write(message)
+    if parsing_status:
+        eml_path = folder / f"{uid}.md"
+        mail.save_to_file(eml_path)
+    else:
+        bin_path = folder / f"{uid}.bin"
+        logger.error(f"Conversion error for {uid}. Dumping to {bin_path}")
+        with open(bin_path, "wb") as f:
+            f.write(raw_msg)
 
-    return dt
+    return mail
 
 
 def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
@@ -57,7 +64,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         mailbox: Name of the mailbox to download emails from
 
     """
-    logger.info(f"Syncing: {mailbox}")
+    logger.info(f"Syncing: {label}")
 
     try:
         typ, data = mail.select(mailbox, readonly=True)
@@ -76,9 +83,9 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
     folder: Path = config.SAVE_DIR / label
     folder.mkdir(parents=True, exist_ok=True)
 
-    for uid in tqdm.tqdm(uids):
+    for uid in tqdm(uids):
         uid_str = uid.decode()
-        eml_path = folder / f"{uid_str}.eml"
+        eml_path = folder / f"{uid_str}.md"
         if eml_path.exists():
             continue  # Skip already downloaded
 

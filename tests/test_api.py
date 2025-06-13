@@ -1,6 +1,5 @@
 import unittest
 
-
 from imapsync.__main__ import main
 
 
