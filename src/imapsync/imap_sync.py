@@ -3,14 +3,14 @@ import os
 from pathlib import Path
 from typing import List
 
-from .config import config
+from .config import config, ImapConfiguration
 from . import logger
 from .Email import eml_to_markdown
 
 
-def connect_to_imap() -> imaplib.IMAP4_SSL:
-    mail = imaplib.IMAP4_SSL(config.IMAP_SERVER, config.IMAP_PORT)
-    mail.login(config.USERNAME, config.PASSWORD)
+def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
+    mail = imaplib.IMAP4_SSL(cfg.IMAP_SERVER, cfg.IMAP_PORT)
+    mail.login(cfg.USERNAME, cfg.PASSWORD)
     return mail
 
 
@@ -45,7 +45,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
     for uid in uids:
         uid_str = uid.decode()
         eml_path = os.path.join(folder, f"{uid_str}.eml")
-        if os.path.exists(eml_path) and False:
+        if os.path.exists(eml_path):
             continue  # Skip already downloaded
 
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
@@ -57,8 +57,9 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
 
 
 def main():
-    mail = connect_to_imap()
+    for imap_conf in config.IMAP_LIST:
+        mail = connect_to_imap(imap_conf)
 
-    sync_mailbox(mail, config.MAILBOX)
+        sync_mailbox(mail, imap_conf.MAILBOX)
 
-    mail.logout()
+        mail.logout()
