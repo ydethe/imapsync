@@ -1,5 +1,6 @@
 # Email.py
 
+from datetime import datetime
 from email import policy
 from email.parser import BytesParser
 from email.message import EmailMessage
@@ -69,7 +70,7 @@ def extract_email_body(msg: EmailMessage) -> Tuple[str, bool]:
     return markdown, status
 
 
-def eml_to_markdown(raw_bytes: bytes) -> Tuple[str, bool]:
+def eml_to_markdown(raw_bytes: bytes) -> Tuple[str, datetime, bool]:
     """Extract best-effort body (preferring text/html, fallback to text/plain).
     The output is converted to markdown
 
@@ -97,4 +98,7 @@ def eml_to_markdown(raw_bytes: bytes) -> Tuple[str, bool]:
 {body}
 """
 
-    return md_content, status
+    # Sat, 09 Jul 2022 09:22:41 +0200
+    dt = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
+
+    return md_content, dt, status

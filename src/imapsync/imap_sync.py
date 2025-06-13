@@ -1,3 +1,4 @@
+from datetime import datetime
 import imaplib
 from pathlib import Path
 from typing import List
@@ -5,6 +6,11 @@ from typing import List
 from .config import config, ImapConfiguration
 from . import logger
 from .Email import eml_to_markdown
+from .index_database import (
+    initialize_state_db,
+    set_last_sync_date_for_account,
+    get_last_sync_date_for_account,
+)
 
 
 def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
@@ -22,7 +28,7 @@ def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
     return mail
 
 
-def save_eml(uid: str, raw_msg: bytes, folder: Path):
+def save_eml(uid: str, raw_msg: bytes, folder: Path) -> datetime:
     """Save an email as markdown file locally
 
     Args:
@@ -30,14 +36,19 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path):
         raw_bytes: Raw message retrieved from the IMAP server
         folder: Destination folder of the downloaded emails
 
+    Returns:
+        Date of the email
+
     """
-    message, status = eml_to_markdown(raw_msg)
+    message, dt, status = eml_to_markdown(raw_msg)
     if not status:
         logger.error(f"Conversion error for {uid}")
 
     eml_path = folder / f"{uid}.md"
     with open(eml_path, "w") as f:
         f.write(message)
+
+    return dt
 
 
 def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
@@ -57,7 +68,17 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         logger.warning(f"Failed to select mailbox: {mailbox}")
         return
 
-    typ, data = mail.uid("search", None, "ALL")
+    dt = get_last_sync_date_for_account(label)
+    if dt is None:
+        filter = None
+    else:
+        # '(SINCE "01-Jan-2012")'
+        sdt = dt.strftime("%m-%b-%Y")
+        filter = f"""(SINCE "{sdt}")"""
+
+        logger.info(f"Synchronzing '{label}' from {dt}")
+
+    typ, data = mail.uid("search", filter, "ALL")
     if typ != "OK":
         logger.warning(f"Failed to search mailbox: {mailbox}")
         return
@@ -75,12 +96,15 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
         if typ == "OK":
             raw_msg: bytes = msg_data[0][1]
-            save_eml(uid_str, raw_msg, folder)
+            dt = save_eml(uid_str, raw_msg, folder)
+            set_last_sync_date_for_account(label, dt)
         else:
             logger.warning(f"Failed to fetch message UID {uid_str}")
 
 
 def main():
+    initialize_state_db()
+
     for imap_conf in config.IMAP_LIST:
         mail = connect_to_imap(imap_conf)
 
