@@ -5,6 +5,7 @@ from typing import List
 
 from .config import config
 from . import logger
+from .Email import eml_to_markdown
 
 
 def connect_to_imap() -> imaplib.IMAP4_SSL:
@@ -13,20 +14,14 @@ def connect_to_imap() -> imaplib.IMAP4_SSL:
     return mail
 
 
-def convert_message(raw_msg: bytes) -> str:
-    return raw_msg.decode("utf-8")
+def save_eml(uid: str, raw_msg: bytes, folder: Path):
+    message, status = eml_to_markdown(raw_msg)
+    if not status:
+        logger.error(f"Conversion error for {uid}")
 
-
-def save_eml(uid: str, raw_msg: bytes, folder: Path) -> bool:
-    message = convert_message(raw_msg)
-
-    eml_path = folder / f"{uid}.eml"
-    if not eml_path.exists():
-        with open(eml_path, "w") as f:
-            f.write(message)
-        return True
-
-    return False
+    eml_path = folder / f"{uid}.md"
+    with open(eml_path, "w") as f:
+        f.write(message)
 
 
 def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
@@ -50,7 +45,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
     for uid in uids:
         uid_str = uid.decode()
         eml_path = os.path.join(folder, f"{uid_str}.eml")
-        if os.path.exists(eml_path):
+        if os.path.exists(eml_path) and False:
             continue  # Skip already downloaded
 
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
@@ -59,8 +54,6 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
             save_eml(uid_str, raw_msg, folder)
         else:
             logger.warning(f"Failed to fetch message UID {uid_str}")
-
-        break
 
 
 def main():

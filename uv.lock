@@ -33,6 +33,19 @@ wheels = [
 ]
 
 [[package]]
+name = "beautifulsoup4"
+version = "4.13.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "soupsieve" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d8/e4/0c4c39e18fd76d6a628d4dd8da40543d136ce2d1752bd6eeeab0791f4d6b/beautifulsoup4-4.13.4.tar.gz", hash = "sha256:dbb3c4e1ceae6aefebdaf2423247260cd062430a410e38c66f2baa50a8437195", size = 621067 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/50/cd/30110dc0ffcf3b131156077b90e9f60ed75711223f306da4db08eff8403b/beautifulsoup4-4.13.4-py3-none-any.whl", hash = "sha256:9bbbb14bfde9d79f38b8cd5f8c7c85f4b8f2523190ebed90e950a8dea4cb1c4b", size = 187285 },
+]
+
+[[package]]
 name = "black"
 version = "22.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -201,10 +214,12 @@ wheels = [
 
 [[package]]
 name = "imapsync"
-version = "0.1.dev2+g0ca9304.d20250612"
+version = "0.1.dev4+g1897fde.d20250612"
 source = { editable = "." }
 dependencies = [
+    { name = "beautifulsoup4" },
     { name = "pydantic-settings" },
+    { name = "pyhtml2md" },
     { name = "python-json-logger" },
 ]
 
@@ -232,7 +247,9 @@ test = [
 
 [package.metadata]
 requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "pydantic-settings", specifier = ">=2.9.1" },
+    { name = "pyhtml2md", specifier = ">=1.7.0" },
     { name = "python-json-logger", specifier = ">=3.3.0" },
 ]
 
@@ -662,6 +679,30 @@ wheels = [
 ]
 
 [[package]]
+name = "pyhtml2md"
+version = "1.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ad/a1/1870f33c1433b1f8e45f707f0c003de5748edd5e351fe6e79c8d6523bb9c/pyhtml2md-1.7.0.tar.gz", hash = "sha256:6272f7efa16542dc1d50fa6082390c0273f47e43b8c907939afc4df6057478cf", size = 1068355 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/a1/594476f8240a067af74ec7a978af09ac6c6cae62a3459498a67e3355ea63/pyhtml2md-1.7.0-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:68ddc07bc71469219c173d76b28d05a3130dff72a4ee19257c75cf433c0ae26c", size = 198011 },
+    { url = "https://files.pythonhosted.org/packages/70/1b/7a47f2738b84caf1dc07e1b09600b06b26539756b50984a685a0ac3883ac/pyhtml2md-1.7.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d121352646ee3e3c1b82f6d8b53369b9803b0e7dddbf98fd59f1c1e4a470cc27", size = 96462 },
+    { url = "https://files.pythonhosted.org/packages/80/34/e5249a3fe5a3913cfb4f39d0d4f7ec7280c411a7647eed036c27b635539d/pyhtml2md-1.7.0-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:09337c281c9843b24efee591df484417642150e3723bffba7b217ed3e788ddfa", size = 147176 },
+    { url = "https://files.pythonhosted.org/packages/04/61/c51ea05ccd71d2801108907a9a443837ddebc1bdf8b496170e5b7493b216/pyhtml2md-1.7.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b87ade4cfb4c2f696253c4688dc5599acf3b3da4aaf0e018c35bbf33c96cacd0", size = 140766 },
+    { url = "https://files.pythonhosted.org/packages/6e/82/7f965790d6dd48651b7c112be2ae3fc5e9f0caffed2fe07a5e2af97efc71/pyhtml2md-1.7.0-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:9438ed380417baa209564742b243f8d19bdd78d6a51b6841c76151840af18361", size = 1204256 },
+    { url = "https://files.pythonhosted.org/packages/60/f5/875d48993f088c5b55da7dbe6eb05725301209bc6947e3dfba3a2b6d9b0b/pyhtml2md-1.7.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:d5922e392642fa2e202fd669b5bc7b4e3febf48cc1df917779f1d61bedd9c6fc", size = 1102772 },
+    { url = "https://files.pythonhosted.org/packages/f9/e4/ba07d499a3af0d036fd3646e769f26e63201446289e8f7ba0576941a0eed/pyhtml2md-1.7.0-cp311-cp311-win32.whl", hash = "sha256:a2a47b3f0ab88c7ca77cf9dc0858cf18183c2af22fa0dadd14861317129d2722", size = 99975 },
+    { url = "https://files.pythonhosted.org/packages/aa/bd/713f52e29e133f5c8a1dc8ffdf43e599ee33c25a5cfb027b9b8c205bf781/pyhtml2md-1.7.0-cp311-cp311-win_amd64.whl", hash = "sha256:8e1e81599e0d1c6420f40798d43d0aaa1509effafbea0d2124fc0b84408b244f", size = 109598 },
+    { url = "https://files.pythonhosted.org/packages/39/af/5e096cb82ce8c2af08c3dc2d905ee4ba805c982878505b24988b0e19c55e/pyhtml2md-1.7.0-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:890726c7d4d94ad1c5762197d7799f7da1f9b87ff075cabab84065d0e6d2135e", size = 197640 },
+    { url = "https://files.pythonhosted.org/packages/9a/df/255627145cf6ac1c77bd483c57c7b728412292ca572362c9b152ab5ddcf1/pyhtml2md-1.7.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:7c87d6dc34982c56c39e43070bd13f3ce8f84a9b6a95ae0b8d9d2c7890d3a000", size = 96157 },
+    { url = "https://files.pythonhosted.org/packages/a4/33/c7ab99bfe36f202a07fb444803af81c25259f0f2b7e8401582c54a486ff5/pyhtml2md-1.7.0-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2835238e9eefd75fe3122a07925b89a0a0894bea74eed81b42184b79213fa380", size = 147027 },
+    { url = "https://files.pythonhosted.org/packages/9e/f4/919b67918f71ae7b6de0619c51304470124671505cfa19a6f12639ccf170/pyhtml2md-1.7.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:108fbfe008f286ae66c9fab84f8bb7027257139d78fc5c27890fa4e22052298d", size = 139750 },
+    { url = "https://files.pythonhosted.org/packages/11/71/ecdba9fea44632d7f24e7e1c5a98dd869ca67d49c78faf2a84e9abb8a030/pyhtml2md-1.7.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:da7e67758f68450f6f2af5563d9b63f07e9b002e286f6d25e9b8a29922805316", size = 1202908 },
+    { url = "https://files.pythonhosted.org/packages/1f/be/a19d9b498d3e5b45d8d56a7c64ef1819577d31f0ce8f1b2d454d992dfb77/pyhtml2md-1.7.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:ee00c4759978105105464595baded4d8194fe6274650dc3330c9eef111e82c16", size = 1101718 },
+    { url = "https://files.pythonhosted.org/packages/bc/83/7f14cb4a13f79dd69559eac00bbbb1e88e72d36572c62bfb10cb855f6117/pyhtml2md-1.7.0-cp312-cp312-win32.whl", hash = "sha256:a39214c5d4990c6d673c6e0ff23656d7de60452c9cfa403bcf253c630c4c1877", size = 99875 },
+    { url = "https://files.pythonhosted.org/packages/c2/b1/8ff0dc367db85cdbfb038e4d8b40e8bf3c2b1112af43f53edb96b5d9a33d/pyhtml2md-1.7.0-cp312-cp312-win_amd64.whl", hash = "sha256:6a9b28a28fd308553c4fea083ff6da651fd763a3b825dc958c540585da249712", size = 109608 },
+]
+
+[[package]]
 name = "pylint"
 version = "3.3.7"
 source = { registry = "https://pypi.org/simple" }
@@ -861,6 +902,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/0f/25911a9f080464c59fab9027482f822b86bf0608957a5fcc6eaac85aa515/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:68ccc6023a3400877818152ad9a1033e3db8625d899c72eacb5a668902e4d652", size = 751597 },
     { url = "https://files.pythonhosted.org/packages/14/0d/e2c3b43bbce3cf6bd97c840b46088a3031085179e596d4929729d8d68270/PyYAML-6.0.2-cp313-cp313-win32.whl", hash = "sha256:bc2fa7c6b47d6bc618dd7fb02ef6fdedb1090ec036abab80d4681424b84c1183", size = 140527 },
     { url = "https://files.pythonhosted.org/packages/fa/de/02b54f42487e3d3c6efb3f89428677074ca7bf43aae402517bc7cca949f3/PyYAML-6.0.2-cp313-cp313-win_amd64.whl", hash = "sha256:8388ee1976c416731879ac16da0aff3f63b286ffdd57cdeb95f3f2e085687563", size = 156446 },
+]
+
+[[package]]
+name = "soupsieve"
+version = "2.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/f4/4a80cd6ef364b2e8b65b15816a843c0980f7a5a2b4dc701fc574952aa19f/soupsieve-2.7.tar.gz", hash = "sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a", size = 103418 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e7/9c/0e6afc12c269578be5c0c1c9f4b49a8d32770a080260c333ac04cc1c832d/soupsieve-2.7-py3-none-any.whl", hash = "sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4", size = 36677 },
 ]
 
 [[package]]
