@@ -11,7 +11,16 @@ import pyhtml2md
 
 
 def extract_email_body(msg: EmailMessage) -> Tuple[str, bool]:
-    """Extract best-effort body (preferring text/plain, fallback to text/html)."""
+    """Extract best-effort body (preferring text/html, fallback to text/plain).
+    The output is converted to markdown
+
+    Args:
+        msg: The email parsed with email.parser.BytesParser
+
+    Returns:
+        A tuple with the markdown content, and a flag that is False if a problem occured
+
+    """
     body = ""
 
     if msg.is_multipart():
@@ -61,6 +70,16 @@ def extract_email_body(msg: EmailMessage) -> Tuple[str, bool]:
 
 
 def eml_to_markdown(raw_bytes: bytes) -> Tuple[str, bool]:
+    """Extract best-effort body (preferring text/html, fallback to text/plain).
+    The output is converted to markdown
+
+    Args:
+        raw_bytes: Raw message retrieved from the IMAP server
+
+    Returns:
+        A tuple with the markdown content, and a flag that is False if a problem occured
+
+    """
     msg = BytesParser(policy=policy.default).parsebytes(raw_bytes)
 
     subject = msg["subject"] or "(No Subject)"

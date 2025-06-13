@@ -9,12 +9,29 @@ from .Email import eml_to_markdown
 
 
 def connect_to_imap(cfg: ImapConfiguration) -> imaplib.IMAP4_SSL:
+    """Connect to the IMAP server
+
+    Args:
+        cfg: Connection information
+
+    Returns:
+        A object to interact with the IMAP server
+
+    """
     mail = imaplib.IMAP4_SSL(cfg.IMAP_SERVER, cfg.IMAP_PORT)
     mail.login(cfg.USERNAME, cfg.PASSWORD)
     return mail
 
 
 def save_eml(uid: str, raw_msg: bytes, folder: Path):
+    """Save an email as markdown file locally
+
+    Args:
+        uid: Email identifier
+        raw_bytes: Raw message retrieved from the IMAP server
+        folder: Destination folder of the downloaded emails
+
+    """
     message, status = eml_to_markdown(raw_msg)
     if not status:
         logger.error(f"Conversion error for {uid}")
@@ -25,6 +42,14 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path):
 
 
 def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
+    """
+    Download and process emails
+
+    Args:
+        mail: Handler to the IMAP server, got with a call to `connect_to_imap`
+        mailbox: Name of the mailbox to download emails from
+
+    """
     try:
         typ, data = mail.select(mailbox, readonly=True)
     except Exception:
