@@ -1,5 +1,4 @@
 import imaplib
-import os
 from pathlib import Path
 from typing import List
 
@@ -41,7 +40,7 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path):
         f.write(message)
 
 
-def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
+def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
     """
     Download and process emails
 
@@ -64,13 +63,13 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, mailbox: str):
         return
 
     uids: List[bytes] = data[0].split()
-    folder: Path = config.SAVE_DIR / mailbox.replace("/", "_")
-    os.makedirs(folder, exist_ok=True)
+    folder: Path = config.SAVE_DIR / label
+    folder.mkdir(parents=True, exist_ok=True)
 
     for uid in uids:
         uid_str = uid.decode()
-        eml_path = os.path.join(folder, f"{uid_str}.eml")
-        if os.path.exists(eml_path):
+        eml_path = folder / f"{uid_str}.eml"
+        if eml_path.exists():
             continue  # Skip already downloaded
 
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
@@ -85,6 +84,6 @@ def main():
     for imap_conf in config.IMAP_LIST:
         mail = connect_to_imap(imap_conf)
 
-        sync_mailbox(mail, imap_conf.MAILBOX)
+        sync_mailbox(mail, imap_conf.LABEL, imap_conf.MAILBOX)
 
         mail.logout()
