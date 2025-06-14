@@ -62,22 +62,22 @@ class Email:
             for part in msg.walk():
                 content_type = part.get_content_type()
                 if content_type == "text/html":
-                    body = part.get_content()
+                    body = part._payload
                     break
 
             if len(body) == 0:
                 for part in msg.walk():
                     content_type = part.get_content_type()
                     if content_type == "text/plain":
-                        body = part.get_content()
+                        body = part._payload
                         break
 
         else:
             content_type = msg.get_content_type()
-            body = msg.get_content()
+            body = msg._payload
 
         if content_type == "text/html":
-            soup = BeautifulSoup(body, features="html.parser")
+            soup = BeautifulSoup(body, features="html5lib")
             for div in soup.find_all("div", {"class": "gmail_quote"}):
                 div.decompose()
             lines = html.unescape(str(soup)).strip().split("\n")
@@ -88,7 +88,8 @@ class Email:
         for line in lines:
             if line.strip().startswith(">"):
                 break
-            body_without_reply += line
+            # Remove all non-utf8 chars
+            body_without_reply += line.encode("utf-8", errors="ignore").decode("utf-8")
 
         if content_type == "text/html":
             options = pyhtml2md.Options()
@@ -96,7 +97,7 @@ class Email:
 
             converter = pyhtml2md.Converter(body_without_reply, options)
             markdown = converter.convert()
-            status = converter.ok()
+            # status = converter.ok()
         else:
             markdown = body_without_reply
 

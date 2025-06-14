@@ -31,6 +31,7 @@ class Config(BaseSettings):
     LOGLEVEL: str
     SAVE_DIR: Path
     IMAP_LIST: List[ImapConfiguration]
+    SYNC_PERIOD: int
 
     @field_validator("IMAP_LIST", mode="before")
     @classmethod

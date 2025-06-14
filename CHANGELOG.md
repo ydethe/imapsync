@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Added scheduled syncing ([9e4f28a](https://github.com/ydethe/imapsync/commit/9e4f28ae1d60fdf50e241f13d758a2a9a24ccce9) by Yann de The).
 - Added proress bar ([ea1a8ed](https://github.com/ydethe/imapsync/commit/ea1a8ed84be9db05d5f3219f239b7497529ab1a9) by Yann de The).
 - Added sync database ([caa6f52](https://github.com/ydethe/imapsync/commit/caa6f52c277509b68d74d7a82750be961bcc1a55) by Yann de The).
 

@@ -41,12 +41,13 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path) -> Email:
         Date of the email
 
     """
-    try:
+    if True:
+        # try:
         mail = Email.from_bytes(raw_msg)
         parsing_status = mail.parsing_status
-    except Exception:
-        mail = None
-        parsing_status = False
+    # except Exception:
+    #     mail = None
+    #     parsing_status = False
 
     if parsing_status:
         eml_path = folder / f"{uid}.md"
