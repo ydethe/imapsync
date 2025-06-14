@@ -13,6 +13,7 @@ dependencies = [
     "pydantic-settings>=2.9.1",
     "pyhtml2md>=1.7.0",
     "python-json-logger>=3.3.0",
+    "schedule>=1.2.2",
     "tqdm>=4.67.1",
 ]
 

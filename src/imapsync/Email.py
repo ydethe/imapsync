@@ -27,10 +27,21 @@ class Email:
         ret.__eml_to_markdown(raw_msg)
         return ret
 
-    def __init__(self, md_content: str = None, dt: datetime = None, parsing_status: bool = None):
-        self.markdown = md_content
-        self.dt = dt
+    def __init__(
+        self,
+        subject: str = "",
+        from_: str = "",
+        to: str = "",
+        body: str = "",
+        date: datetime = None,
+        parsing_status: bool = None,
+    ):
         self.parsing_status = parsing_status
+        self.date = date
+        self.subject = subject
+        self.from_ = from_
+        self.to = to
+        self.body = body
 
     def __extract_email_body(self, msg: EmailMessage) -> Tuple[str, bool]:
         """Extract best-effort body (preferring text/html, fallback to text/plain).
@@ -110,22 +121,27 @@ class Email:
         date = msg["date"] or ""
         body, status = self.__extract_email_body(msg)
 
-        md_content = f"""# {subject}
-
-**From:** {from_}
-**To:** {to}
-**Date:** {date}
-
-{body}
-"""
-
         # Sat, 09 Jul 2022 09:22:41 +0200
-        dt = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
-
-        self.markdown = md_content
-        self.dt = dt
+        self.date = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %z")
+        self.subject = subject
+        self.from_ = from_
+        self.to = to
+        self.body = body
         self.parsing_status = status
+
+    def get_markdown(self) -> str:
+        sdt = self.date.strftime("%a, %d %b %Y %H:%M:%S %z")
+
+        md_content = f"""# {self.subject}
+
+**From:** {self.from_}
+**To:** {self.to}
+**Date:** {sdt}
+
+{self.body}
+"""
+        return md_content
 
     def save_to_file(self, pth: Path):
         with open(pth, "w") as f:
-            f.write(self.markdown)
+            f.write(self.get_markdown())

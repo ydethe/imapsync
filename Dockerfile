@@ -2,30 +2,40 @@
 FROM python:3.13-slim AS builder
 
 ARG LOGLEVEL
-ARG IMAP_SERVER
-ARG IMAP_PORT
-ARG USERNAME
-ARG PASSWORD
-ARG MAILBOX
 ARG SAVE_DIR
+ARG IMAP_LIST__0__LABEL
+ARG IMAP_LIST__0__IMAP_SERVER
+ARG IMAP_LIST__0__IMAP_PORT
+ARG IMAP_LIST__0__USERNAME
+ARG IMAP_LIST__0__PASSWORD
+ARG IMAP_LIST__1__LABEL
+ARG IMAP_LIST__1__IMAP_SERVER
+ARG IMAP_LIST__1__IMAP_PORT
+ARG IMAP_LIST__1__USERNAME
+ARG IMAP_LIST__1__PASSWORD
 
 ENV LOGLEVEL=$LOGLEVEL
-ENV IMAP_SERVER=$IMAP_SERVER
-ENV IMAP_PORT=$IMAP_PORT
-ENV USERNAME=$USERNAME
-ENV PASSWORD=$PASSWORD
-ENV MAILBOX=$MAILBOX
 ENV SAVE_DIR=$SAVE_DIR
+ENV IMAP_LIST__0__LABEL=$IMAP_LIST__0__LABEL
+ENV IMAP_LIST__0__IMAP_SERVER=$IMAP_LIST__0__IMAP_SERVER
+ENV IMAP_LIST__0__IMAP_PORT=$IMAP_LIST__0__IMAP_PORT
+ENV IMAP_LIST__0__USERNAME=$IMAP_LIST__0__USERNAME
+ENV IMAP_LIST__0__PASSWORD=$IMAP_LIST__0__PASSWORD
+ENV IMAP_LIST__1__LABEL=$IMAP_LIST__0__LABEL
+ENV IMAP_LIST__1__IMAP_SERVER=$IMAP_LIST__0__IMAP_SERVER
+ENV IMAP_LIST__1__IMAP_PORT=$IMAP_LIST__0__IMAP_PORT
+ENV IMAP_LIST__1__USERNAME=$IMAP_LIST__0__USERNAME
+ENV IMAP_LIST__1__PASSWORD=$IMAP_LIST__0__PASSWORD
+
+RUN apt update && apt install -y g++
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN ./venv/bin/python -m pip install --no-cache-dir -U -r requirements.txt && \
-    find /app/venv \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' \+
+RUN python -m pip install --no-cache-dir -U -r requirements.txt
 
 COPY dist/*.whl .
-RUN ./venv/bin/python -m pip install --no-cache-dir *.whl && \
-    rm -f *.whl && \
-    find /app/venv \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' \+
+RUN python -m pip install --no-cache-dir *.whl && \
+    rm -f *.whl
 
-CMD ["/app/venv/bin/python", "-m" , "imapsync"]
+CMD ["python", "-m" , "imapsync"]

@@ -4,6 +4,11 @@ from typing import List
 
 from tqdm import tqdm
 
+from .index_database import (
+    get_last_sync_date_for_account,
+    initialize_state_db,
+    set_last_sync_date_for_account,
+)
 from .config import config, ImapConfiguration
 from . import logger
 from .Email import Email
@@ -74,7 +79,17 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         logger.warning(f"Failed to select mailbox: {mailbox}")
         return
 
-    typ, data = mail.uid("search", None, "ALL")
+    dt = get_last_sync_date_for_account(label)
+    if dt is None:
+        filter = None
+    else:
+        # '(SINCE "01-Jan-2012")'
+        sdt = dt.strftime("%m-%b-%Y")
+        filter = f"""(SINCE "{sdt}")"""
+
+        logger.info(f"Synchronzing '{label}' from {dt}")
+
+    typ, data = mail.uid("search", filter, "ALL")
     if typ != "OK":
         logger.warning(f"Failed to search mailbox: {mailbox}")
         return
@@ -83,6 +98,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
     folder: Path = config.SAVE_DIR / label
     folder.mkdir(parents=True, exist_ok=True)
 
+    new_dt = None
     for uid in tqdm(uids):
         uid_str = uid.decode()
         eml_path = folder / f"{uid_str}.md"
@@ -92,12 +108,21 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
         if typ == "OK":
             raw_msg: bytes = msg_data[0][1]
-            save_eml(uid_str, raw_msg, folder)
+            email = save_eml(uid_str, raw_msg, folder)
+            if new_dt is None:
+                new_dt = email.date
+            else:
+                new_dt = max(new_dt, email.date)
         else:
             logger.warning(f"Failed to fetch message UID {uid_str}")
 
+    if new_dt is not None:
+        set_last_sync_date_for_account(label, new_dt)
 
-def main():
+
+def sync_all():
+    initialize_state_db()
+
     for imap_conf in config.IMAP_LIST:
         mail = connect_to_imap(imap_conf)
 
