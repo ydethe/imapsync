@@ -1,0 +1,27 @@
+services:
+  imapsync:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - /home/yann/repos/imapsync/emails:/emails
+    environment:
+      - LOGLEVEL=$LOGLEVEL
+      - SYNC_PERIOD=$SYNC_PERIOD
+      - IMAP_LIST__0__LABEL=$IMAP_LIST__0__LABEL
+      - IMAP_LIST__0__IMAP_SERVER=$IMAP_LIST__0__IMAP_SERVER
+      - IMAP_LIST__0__IMAP_PORT=$IMAP_LIST__0__IMAP_PORT
+      - IMAP_LIST__0__USERNAME=$IMAP_LIST__0__USERNAME
+      - IMAP_LIST__0__PASSWORD=$IMAP_LIST__0__PASSWORD
+      - IMAP_LIST__0__MAILBOX=$IMAP_LIST__0__MAILBOX
+      - IMAP_LIST__1__LABEL=$IMAP_LIST__1__LABEL
+      - IMAP_LIST__1__IMAP_SERVER=$IMAP_LIST__1__IMAP_SERVER
+      - IMAP_LIST__1__IMAP_PORT=$IMAP_LIST__1__IMAP_PORT
+      - IMAP_LIST__1__USERNAME=$IMAP_LIST__1__USERNAME
+      - IMAP_LIST__1__PASSWORD=$IMAP_LIST__1__PASSWORD
+      - IMAP_LIST__1__MAILBOX=$IMAP_LIST__1__MAILBOX
+
+networks:
+  default:
+    external: true
+    name: $TRAEFIK_NETWORK
+
