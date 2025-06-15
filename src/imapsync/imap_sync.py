@@ -41,13 +41,8 @@ def save_eml(uid: str, raw_msg: bytes, folder: Path) -> Email:
         Date of the email
 
     """
-    if True:
-        # try:
-        mail = Email.from_bytes(raw_msg)
-        parsing_status = mail.parsing_status
-    # except Exception:
-    #     mail = None
-    #     parsing_status = False
+    mail = Email.from_bytes(raw_msg)
+    parsing_status = mail.parsing_status
 
     if parsing_status:
         eml_path = folder / f"{uid}.md"
@@ -70,8 +65,6 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
         mailbox: Name of the mailbox to download emails from
 
     """
-    logger.info(f"Syncing: {label}")
-
     try:
         typ, data = mail.select(mailbox, readonly=True)
     except Exception:
@@ -82,7 +75,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
 
     dt = get_last_sync_date_for_account(label)
     if dt is None:
-        filter = None
+        filter = "ALL"
     else:
         # '(SINCE "01-Jan-2012")'
         sdt = dt.strftime("%m-%b-%Y")
@@ -90,7 +83,7 @@ def sync_mailbox(mail: imaplib.IMAP4_SSL, label: str, mailbox: str):
 
         logger.info(f"Synchronzing '{label}' from {dt}")
 
-    typ, data = mail.uid("search", filter, "ALL")
+    typ, data = mail.uid("search", None, filter)
     if typ != "OK":
         logger.warning(f"Failed to search mailbox: {mailbox}")
         return
@@ -125,6 +118,8 @@ def sync_all():
     initialize_state_db()
 
     for imap_conf in config.IMAP_LIST:
+        logger.info(f"Syncing account '{imap_conf.LABEL}")
+
         mail = connect_to_imap(imap_conf)
 
         sync_mailbox(mail, imap_conf.LABEL, imap_conf.MAILBOX)
