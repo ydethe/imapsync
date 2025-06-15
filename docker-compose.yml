@@ -3,7 +3,7 @@ services:
     build: .
     restart: unless-stopped
     volumes:
-      - /home/yann/repos/imapsync/emails:/emails
+      - ./emails:/emails
     environment:
       - LOGLEVEL=$LOGLEVEL
       - SYNC_PERIOD=$SYNC_PERIOD

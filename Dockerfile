@@ -1,6 +1,6 @@
 FROM python:3.13-slim
 
-RUN apt update && apt install -y g++
+RUN apt update && apt install -y g++ ca-certificates && update-ca-certificates
 
 WORKDIR /app
 

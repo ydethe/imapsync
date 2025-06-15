@@ -4,10 +4,13 @@ from imapsync.Email import Email
 from imapsync.__main__ import sync_all
 from imapsync.imap_sync import connect_to_imap
 from imapsync.config import config
+from imapsync import logger
 
 
 class TestIMAPSync(unittest.TestCase):
     def test_main(self):
+        logger.info(f"{config}")
+
         sync_all()
 
     def test_error(self):
@@ -20,7 +23,6 @@ class TestIMAPSync(unittest.TestCase):
         typ, msg_data = mail.uid("fetch", uid, "(RFC822)")
         raw_msg: bytes = msg_data[0][1]
         mail = Email.from_bytes(raw_msg)
-        print(mail.parsing_status)
 
 
 if __name__ == "__main__":

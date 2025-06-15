@@ -29,7 +29,7 @@ from .config import config
 
 
 # création de l'objet logger qui va nous servir à écrire dans les logs
-logger = logging.getLogger("ragwebui_logger")
+logger = logging.getLogger("imapsync_logger")
 logger.setLevel(config.LOGLEVEL.upper())
 
 # Create stream handler for stdout

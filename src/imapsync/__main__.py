@@ -7,8 +7,11 @@ from . import logger
 
 
 if __name__ == "__main__":
+    logger.info(f"{config}")
+
+    sync_all()
+
     schedule.every(config.SYNC_PERIOD).minutes.do(sync_all)
-    logger.info("Started imapsync")
 
     while True:
         schedule.run_pending()
