@@ -8,4 +8,4 @@ git pull
 sudo docker build . -t imapsync
 sudo docker compose pull
 sudo docker compose down
-sudo docker compose up --remove-orphans --build -d
+sudo docker compose up --remove-orphans --build
