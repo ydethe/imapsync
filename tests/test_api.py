@@ -4,13 +4,10 @@ from imapsync.Email import Email
 from imapsync.__main__ import sync_all
 from imapsync.imap_sync import connect_to_imap
 from imapsync.config import config
-from imapsync import logger
 
 
 class TestIMAPSync(unittest.TestCase):
     def test_main(self):
-        logger.info(f"{config}")
-
         sync_all()
 
     def test_error(self):

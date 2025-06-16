@@ -19,6 +19,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Fixed image ([99ec817](https://github.com/ydethe/imapsync/commit/99ec8170cb099e1736a76738387e5cf487bb6dab) by Yann de The).
+- Fixed image ([1886ae0](https://github.com/ydethe/imapsync/commit/1886ae0b9cac4c3188028757ea72c578306abaad) by Yann de The).
 
 <!-- insertion marker -->
